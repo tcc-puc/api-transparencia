@@ -5,10 +5,45 @@ const server = express();
 
 server.use(express.json());
 
+/**
+ * Prometheus config
+ */
+const client = require('prom-client');
+const collectDefaultMetrics = client.collectDefaultMetrics;
+
+collectDefaultMetrics({ timeout: 5000 });
+
+const counter = new client.Counter({
+  name: 'node_request_operations_total',
+  help: 'The total number of processed requests'
+});
+
+/**
+ * Prometheus endpoint
+ */
+server.get('/metrics', (req, res) => {
+  res.set('Content-Type', client.register.contentType)
+  res.end(client.register.metrics())
+})
+
+/**
+ * Global Middleware for logging
+ */
+server.use((req, res, next) => {
+  counter.inc();
+  return next();
+});
+
+/**
+ * Conferir status da API
+ */
 server.get("/", (req, res) => {
   res.send("API transparencia running...");
 });
 
+/**
+ * Recupera licitacoes
+ */
 server.get("/recursos/:action", (req, res) => {
 
   const { action } = req.params;
