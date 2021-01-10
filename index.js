@@ -1,9 +1,20 @@
 const mocks = require('./mocks.json');
 const express = require("express");
-
 const server = express();
 
 server.use(express.json());
+
+//
+const redis = require("redis");
+const redisClient = redis.createClient({ host: 'redis'});
+
+redisClient.on("error", function(error) {
+  console.error(error);
+});
+ 
+redisClient.set("key", "value", redis.print);
+redisClient.get("key", redis.print);
+
 
 /**
  * Prometheus config
@@ -38,7 +49,7 @@ server.use((req, res, next) => {
  * Conferir status da API
  */
 server.get("/", (req, res) => {
-  res.send("API transparencia running...");
+  res.send("API transparencia running 2...");
 });
 
 /**
