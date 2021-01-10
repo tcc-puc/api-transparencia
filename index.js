@@ -4,17 +4,15 @@ const server = express();
 
 server.use(express.json());
 
-//
+/**
+ * Redis config
+ */
 const redis = require("redis");
 const redisClient = redis.createClient({ host: 'redis'});
 
 redisClient.on("error", function(error) {
   console.error(error);
 });
- 
-redisClient.set("key", "value", redis.print);
-redisClient.get("key", redis.print);
-
 
 /**
  * Prometheus config
@@ -59,19 +57,28 @@ server.get("/recursos/:action", (req, res) => {
 
   const { action } = req.params;
 
-  if (action === "licitacoes") {
-    return res.status(200).send(mocks.licitacoes)
+  redisClient.get(action, async (err, response) => {
+    if (response) {
+      return res.status(200).send(response)
+    }
 
-  } else if (action === "convenios") {
-    return res.status(200).send(mocks.convenios)
-  } else {
-    return res.status(404).json({
-        "error": "search-0002",
-        "message": "Dados nāo encontrados, por favor tente novamente.",
-        "detail": "Parece que houve um erro com a sua busca",
-        "help": ""
-    })
-  }
+    if (action === "licitacoes") {
+      redisClient.setex(action, 1440, JSON.stringify(mocks.licitacoes));
+      return res.status(200).send(mocks.licitacoes)
+
+    } else if (action === "convenios") {
+      redisClient.setex(action, 1440, JSON.stringify(mocks.convenios));
+      return res.status(200).send(mocks.convenios)
+
+    } else {
+      return res.status(404).json({
+          "error": "search-0002",
+          "message": "Dados nāo encontrados, por favor tente novamente.",
+          "detail": "Parece que houve um erro com a sua busca",
+          "help": ""
+      })
+    }
+  })
 });
 
 server.listen(3031);
