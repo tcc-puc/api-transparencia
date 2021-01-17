@@ -1,34 +1,29 @@
 const mocks = require('./mocks.json');
 const express = require("express");
 const server = express();
+const { Kafka } = require('kafkajs')
 
 server.use(express.json());
 
-/// Apache Kafka
-const { Kafka } = require('kafkajs')
- 
+/**
+ * Kafka config
+ */
 const kafka = new Kafka({
   clientId: 'my-app',
   brokers: ['kafka1:19092']
 })
- 
+
 const producer = kafka.producer()
 const consumer = kafka.consumer({ groupId: 'test-group' })
- 
+
 const run = async () => {
-  // Producing
-  await producer.connect()
-  await producer.send({
-    topic: 'topic1',
-    messages: [
-      { value: 'Hello KafkaJS user!' },
-    ],
-  })
- 
-  // Consuming
+
+  /**
+   * Consumer
+   */
   await consumer.connect()
-  await consumer.subscribe({ topic: 'topic1', fromBeginning: true })
- 
+  await consumer.subscribe({ topic: 'topic_transparencia', fromBeginning: true })
+
   await consumer.run({
     eachMessage: async ({ topic, partition, message }) => {
       console.log({
@@ -39,7 +34,7 @@ const run = async () => {
     },
   })
 }
- 
+
 run().catch(console.error);
 
 /**
@@ -86,6 +81,31 @@ server.use((req, res, next) => {
  */
 server.get("/", (req, res) => {
   res.send("API transparencia running 2...");
+});
+
+/**
+ * Conferir status da API
+ * Endpoint criado para simular o envio de uma mensagem atraves do sistema terceiro do governo.
+ */
+server.get("/controladoria", (req, res) => {
+
+  const run = async () => {
+
+    /**
+     * Producer - cria topico
+     */
+    await producer.connect()
+    await producer.send({
+      topic: 'topic_transparencia',
+      messages: [
+        { value: 'updated' },
+      ],
+    })
+  }
+
+  run()
+
+  res.send("Mensagem enviada");
 });
 
 /**
