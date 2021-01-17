@@ -19,6 +19,7 @@
   "homepage": "https://github.com/tcc-puc/api-transparencia#readme",
   "dependencies": {
     "express": "^4.17.1",
+    "kafkajs": "^1.15.0",
     "nodemon": "^2.0.6",
     "prom-client": "^11.5.3",
     "redis": "^3.0.2"
