@@ -6,6 +6,14 @@ const { Kafka } = require('kafkajs')
 server.use(express.json());
 
 /**
+ * Swagger config
+ */
+const swaggerUi = require('swagger-ui-express'),
+swaggerDocument = require('./swagger.json');
+
+server.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
+/**
  * Kafka config
  */
 const kafka = new Kafka({
@@ -109,7 +117,7 @@ server.get("/controladoria", (req, res) => {
 });
 
 /**
- * Recupera licitacoes
+ * Recupera os dados de transparencia
  */
 server.get("/recursos/:action", (req, res) => {
 

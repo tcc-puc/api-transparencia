@@ -1,0 +1,182 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "API transparência - prefeitura de Bom Destino",
+    "description": "API transparência fornece os dados de transparência de Bom Destino.",
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "host": "localhost:3031",
+  "basePath": "/",
+  "tags": [
+    {
+      "name": "Recursos",
+      "description": "Dados de transparência da cidade de Bom Destino."
+    }
+  ],
+  "schemes": ["http"],
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
+
+  "paths": {
+    "/recursos/licitacoes": {
+      "get": {
+        "tags": ["Recurso"],
+        "summary": "Retornam os dados de transparência de um determinado recurso",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Licitacoes"
+            }
+          },
+          "404": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/recursos/convenios": {
+      "get": {
+        "tags": ["Recurso"],
+        "summary": "Retornam os dados de transparência de um determinado recurso",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Convenios"
+            }
+          },
+          "404": {
+            "description": "Error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Licitacoes": {
+      "properties": {
+        "licitacoes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "dataResultadoCompra": {
+                "type": "string"
+              },
+              "dataAbertura": {
+                "type": "string"
+              },
+              "orgaoSuperiorLicitante": {
+                "type": "string"
+              },
+              "EntidadeVinculada": {
+                "type": "string"
+              },
+              "unidadeGestora": {
+                "type": "string"
+              },
+              "situacao": {
+                "type": "string"
+              },
+              "modalidade": {
+                "type": "string"
+              },
+              "instrumentoLegal": {
+                "type": "string"
+              },
+              "numeroLicitacao": {
+                "type": "string"
+              },
+              "objeto": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "Convenios": {
+      "properties": {
+        "convenios": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "numero": {
+                "type": "string"
+              },
+              "uf": {
+                "type": "string"
+              },
+              "municipio": {
+                "type": "string"
+              },
+              "situacao": {
+                "type": "string"
+              },
+              "tipoInstrumento": {
+                "type": "string"
+              },
+              "objeto": {
+                "type": "string"
+              },
+              "orgaoSuperior": {
+                "type": "string"
+              },
+              "entidadeVisculada": {
+                "type": "string"
+              },
+              "concedente": {
+                "type": "string"
+              },
+              "convenente": {
+                "type": "string"
+              },
+              "dataInicio": {
+                "type": "string"
+              },
+              "dataFim": {
+                "type": "string"
+              },
+              "valorLiberado": {
+                "type": "string"
+              },
+              "valorCelebrado": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "Error": {
+      "type": "object",
+      "required": ["error", "message", "detail", "help"],
+      "properties": {
+        "error": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "detail": {
+          "type": "string"
+        },
+        "help": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
